@@ -1,16 +1,12 @@
-import platform
+import os
 
 import pytest
 import yaml
 
 import xoryaml
 
-if platform.python_implementation() == "CPython":
-    from yaml import CDumper as Dumper
-    from yaml import CSafeLoader as Loader
-else:
-    from yaml import Dumper as Dumper
-    from yaml import SafeLoader as Loader
+pytestmark = pytest.mark.skipif(os.environ.get("CI") is not None, reason="CI")
+
 
 DATA = [
     [
@@ -108,7 +104,9 @@ def test_xoryaml_bench_dumps(benchmark):
 
 @pytest.mark.benchmark(group="dumps")
 def test_pyyaml_bench_dumps(benchmark):
-    benchmark(yaml.dump, DATA, Dumper=Dumper)
+    from yaml import CDumper
+
+    benchmark(yaml.dump, DATA, Dumper=CDumper)
 
 
 @pytest.mark.benchmark(group="loads")
@@ -118,7 +116,9 @@ def test_xoryaml_bench_loads(benchmark):
 
 @pytest.mark.benchmark(group="loads")
 def test_pyyaml_bench_loads(benchmark):
-    benchmark(yaml.load, SRC, Loader=Loader)
+    from yaml import CSafeLoader
+
+    benchmark(yaml.load, SRC, Loader=CSafeLoader)
 
 
 def xoryaml_loads_all(str):
@@ -126,7 +126,9 @@ def xoryaml_loads_all(str):
 
 
 def pyyaml_loads_all(str):
-    list(yaml.load_all(str, Loader=Loader))
+    from yaml import CSafeLoader
+
+    list(yaml.load_all(str, Loader=CSafeLoader))
 
 
 @pytest.mark.benchmark(group="loads_all")
