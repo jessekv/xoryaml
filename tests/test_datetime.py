@@ -6,6 +6,7 @@ import xoryaml
 AMSTERDAM_1937_DATETIMES_WITH_Z = (
     '---\n- "1937-01-01T12:00:27.000087+00:20"',  # tzinfo<2022b and an example in RFC 3339
     '---\n- "1937-01-01T12:00:27.000087Z"',  # tzinfo>=2022b
+    '---\n- "1937-01-01T12:00:27.000087+00:19"',  # some platforms
 )
 
 
