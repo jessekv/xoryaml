@@ -25,7 +25,7 @@ from [orjson](https://github.com/ijl/orjson).
 
 In order to keep the interface to native code as simple as possible, I have
 implemented part of the interface in Python. Not sure if this is a bad idea, but
-it seems to work fine? Let me know if otherwise ;)
+it seems to work fine? Let me know if otherwise.
 
 ## Thanks
 
