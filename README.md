@@ -37,6 +37,11 @@ This project would not be possible without:
 - [speedate (pydantic)](https://github.com/pydantic/speedate): Date formatting
 
 
+## Build
+
+- Install maturin
+- Run `maturin develop --release`
+
 ## Tests
 
 - Install tox: `uv tool install tox --with tox-uv`
