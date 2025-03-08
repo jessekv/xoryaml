@@ -1,7 +1,6 @@
 import platform
 
 import pytest
-import ryaml
 import yaml
 
 import xoryaml
@@ -108,11 +107,6 @@ def test_xoryaml_bench_dumps(benchmark):
 
 
 @pytest.mark.benchmark(group="dumps")
-def test_ryaml_bench_dumps(benchmark):
-    benchmark(ryaml.dumps, DATA)
-
-
-@pytest.mark.benchmark(group="dumps")
 def test_pyyaml_bench_dumps(benchmark):
     benchmark(yaml.dump, DATA, Dumper=Dumper)
 
@@ -120,11 +114,6 @@ def test_pyyaml_bench_dumps(benchmark):
 @pytest.mark.benchmark(group="loads")
 def test_xoryaml_bench_loads(benchmark):
     benchmark(xoryaml.loads, SRC)
-
-
-@pytest.mark.benchmark(group="loads")
-def test_ryaml_bench_loads(benchmark):
-    benchmark(ryaml.loads, SRC)
 
 
 @pytest.mark.benchmark(group="loads")
@@ -136,10 +125,6 @@ def xoryaml_loads_all(str):
     list(xoryaml.loads_all(str))
 
 
-def ryaml_loads_all(str):
-    list(ryaml.loads_all(str))
-
-
 def pyyaml_loads_all(str):
     list(yaml.load_all(str, Loader=Loader))
 
@@ -147,11 +132,6 @@ def pyyaml_loads_all(str):
 @pytest.mark.benchmark(group="loads_all")
 def test_xoryaml_bench_loads_all(benchmark):
     benchmark(xoryaml_loads_all, MULTIDOC)
-
-
-@pytest.mark.benchmark(group="loads_all")
-def test_ryaml_bench_loads_all(benchmark):
-    benchmark(ryaml_loads_all, MULTIDOC)
 
 
 @pytest.mark.benchmark(group="loads_all")

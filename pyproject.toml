@@ -24,7 +24,7 @@ classifiers = [
     "Operating System :: MacOS",
     "Typing :: Typed",
 ]
-optional-dependencies.test = ["pyyaml", "ryaml", "pytest", "pytest-benchmark"]
+optional-dependencies.test = ["pyyaml", "pytest", "pytest-benchmark"]
 dynamic = ["version"]
 
 [project.urls]
