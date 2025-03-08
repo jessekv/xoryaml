@@ -33,7 +33,8 @@ This project would not be possible without:
 
 - [pyo3](https://pyo3.rs/): Rust-python interop
 - [yaml-rust2](https://github.com/ethiraric/yaml-rust2): Pure Rust YAML impl
-- [orjson](https://github.com/ijl/orjson): Test suite
+- [orjson](https://github.com/ijl/orjson): Parts of test suite
+- [ryaml](https://github.com/emmatyping/ryaml): Parts of test suite
 - [speedate (pydantic)](https://github.com/pydantic/speedate): Date formatting
 
 
