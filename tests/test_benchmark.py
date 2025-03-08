@@ -1,7 +1,6 @@
 import os
 
 import pytest
-import yaml
 
 import xoryaml
 
@@ -104,6 +103,7 @@ def test_xoryaml_bench_dumps(benchmark):
 
 @pytest.mark.benchmark(group="dumps")
 def test_pyyaml_bench_dumps(benchmark):
+    import yaml
     from yaml import CDumper
 
     benchmark(yaml.dump, DATA, Dumper=CDumper)
@@ -116,6 +116,7 @@ def test_xoryaml_bench_loads(benchmark):
 
 @pytest.mark.benchmark(group="loads")
 def test_pyyaml_bench_loads(benchmark):
+    import yaml
     from yaml import CSafeLoader
 
     benchmark(yaml.load, SRC, Loader=CSafeLoader)
@@ -126,6 +127,7 @@ def xoryaml_loads_all(str):
 
 
 def pyyaml_loads_all(str):
+    import yaml
     from yaml import CSafeLoader
 
     list(yaml.load_all(str, Loader=CSafeLoader))
