@@ -60,7 +60,7 @@ jobs:
           set -e
           python3 -m venv .venv
           source .venv/bin/activate
-          pip install xoryaml --find-links dist --force-reinstall
+          pip install xoryaml[test] --find-links dist --force-reinstall
           pip install pytest
           pytest
       - name: pytest
