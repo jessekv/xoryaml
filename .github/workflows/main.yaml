@@ -76,7 +76,8 @@ jobs:
             pip3 install -U pip pytest
           run: |
             set -e
-            pip3 install xoryaml[test] --find-links dist --force-reinstall
+            pip3 install xoryaml --find-links dist --force-reinstall --no-deps --no-index
+            pip3 install xoryaml[test]
             pytest
 
   windows:
