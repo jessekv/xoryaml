@@ -38,12 +38,16 @@ This project would not be possible without:
 - [speedate (pydantic)](https://github.com/pydantic/speedate): Date formatting
 
 
-## Build
+## Dev install
+- Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- Install maturin: `uv tool install maturin`
+- Make a venv `uv venv`
+- Activate the venv `source .venv/bin/activate`
+- Build and install `uv pip install -e '.[bench]'`
+- Optional: build release `maturin develop --release`
+- Run tests `pytest`
 
-- Install maturin
-- Run `maturin develop --release`
-
-## Tests
+## Run tests on all supported versions of python locally
 
 - Install tox: `uv tool install tox --with tox-uv`
 - Run: `tox`
