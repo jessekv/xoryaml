@@ -1,3 +1,4 @@
+import json
 import os
 
 import pytest
@@ -99,6 +100,11 @@ us: true
 @pytest.mark.benchmark(group="dumps")
 def test_xoryaml_bench_dumps(benchmark):
     benchmark(xoryaml.dumps, DATA)
+
+
+@pytest.mark.benchmark(group="dumps")
+def test_json_bench_dumps(benchmark):
+    benchmark(json.dumps, DATA)
 
 
 @pytest.mark.benchmark(group="dumps")
