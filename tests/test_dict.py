@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: (Apache-2.0 OR MIT)
+from typing import TypedDict
 
 import pytest
 
@@ -103,3 +103,13 @@ def test_dict_invalid_key_loads():
     """
     with pytest.raises(xoryaml.YAMLDecodeError):
         xoryaml.loads('{{"a":true}:true}')
+
+
+class TypedDict1(TypedDict):
+    a: str
+    b: int
+
+
+def test_typeddict():
+    obj = TypedDict1(a="a", b=1)
+    assert xoryaml.dumps(obj) == "---\na: a\nb: 1"
