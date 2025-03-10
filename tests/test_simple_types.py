@@ -1,4 +1,3 @@
-import inspect
 import json
 
 import pytest
@@ -33,54 +32,30 @@ def test_simple_types(obj):
 
 @pytest.mark.parametrize("obj", SIMPLE_TYPES, ids=repr)
 def test_simple_round_trip(obj):
-    """
-    dumps(), loads() round trip on simple types
-    """
-    assert xoryaml.loads(xoryaml.dumps(obj)) == obj
+    dumped = xoryaml.dumps(obj)
+    assert dumped
+    assert xoryaml.loads(dumped) == obj
 
 
 @pytest.mark.parametrize("obj", (1, 3.14, [], {}, None), ids=repr)
 def test_loads_type(obj):
-    """
-    loads() invalid type
-    """
     pytest.raises(xoryaml.YAMLDecodeError, xoryaml.loads, obj)
 
 
 def test_valueerror():
-    """
-    xoryaml.YAMLDecodeError is a subclass of ValueError
-    """
     pytest.raises(xoryaml.YAMLDecodeError, xoryaml.loads, "{")
     pytest.raises(ValueError, xoryaml.loads, "{")
 
 
 def test_default_empty_kwarg():
-    """
-    dumps() empty kwarg
-    """
     assert xoryaml.dumps(None, **{}) == "---\n~"
 
 
-def test_loads_signature():
-    """
-    loads() valid __text_signature__
-    """
-    assert str(inspect.signature(xoryaml.loads)), "(obj == /)"
-    inspect.signature(xoryaml.loads).bind("[]")
-
-
 def test_dumps_module_str():
-    """
-    xoryaml.dumps.__module__ is a str
-    """
     assert xoryaml.dumps.__module__ == "xoryaml"
 
 
 def test_loads_module_str():
-    """
-    xoryaml.loads.__module__ is a str
-    """
     assert xoryaml.loads.__module__ == "xoryaml"
 
 

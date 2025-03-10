@@ -1,12 +1,16 @@
 use pyo3::create_exception;
 use pyo3::prelude::*;
-use pyo3::types::{PyDate, PyDateTime, PyDelta, PyDict, PyList, PyTime};
+use pyo3::types::{
+    PyDate, PyDateTime, PyDelta, PyDict, PyFrozenSet, PyList, PySet, PyTime, PyTuple,
+};
 use pyo3::wrap_pyfunction;
 use pyo3::Python;
 use pyo3::{exceptions::PyTypeError, exceptions::PyValueError};
 use std::collections::HashSet;
 use yaml_rust2::{Yaml, YamlEmitter, YamlLoader};
 
+mod dataclass;
+use dataclass::DataclassMod;
 mod datetime;
 
 create_exception!(xoryaml, YAMLDecodeError, PyValueError);
@@ -71,6 +75,7 @@ fn yaml_to_pyobject(py: Python, yaml: &Yaml) -> PyResult<PyObject> {
 fn pyobject_to_yaml_inner(
     obj: &Bound<'_, PyAny>,
     visited: &mut HashSet<*mut PyAny>,
+    dataclass_mod: &DataclassMod<'_>,
 ) -> PyResult<Yaml> {
     let ptr = obj.as_ptr() as *mut PyAny;
 
@@ -103,15 +108,49 @@ fn pyobject_to_yaml_inner(
     } else if let Ok(list) = obj.downcast::<PyList>() {
         let mut yaml_array = Vec::new();
         for item in list.iter() {
-            yaml_array.push(pyobject_to_yaml_inner(&item, visited)?);
+            yaml_array.push(pyobject_to_yaml_inner(&item, visited, dataclass_mod)?);
+        }
+        Ok(Yaml::Array(yaml_array))
+    } else if let Ok(tuple) = obj.downcast::<PyTuple>() {
+        // Handle Python tuples - convert to YAML array
+        let mut yaml_array = Vec::new();
+        for item in tuple.iter() {
+            yaml_array.push(pyobject_to_yaml_inner(&item, visited, dataclass_mod)?);
+        }
+        Ok(Yaml::Array(yaml_array))
+    } else if let Ok(set) = obj.downcast::<PySet>() {
+        // Handle Python sets - convert to YAML array
+        let mut yaml_array = Vec::new();
+        for item in set.iter() {
+            yaml_array.push(pyobject_to_yaml_inner(&item, visited, dataclass_mod)?);
+        }
+        Ok(Yaml::Array(yaml_array))
+    } else if let Ok(frozen_set) = obj.downcast::<PyFrozenSet>() {
+        // Handle Python frozensets - convert to YAML array
+        let mut yaml_array = Vec::new();
+        for item in frozen_set.iter() {
+            yaml_array.push(pyobject_to_yaml_inner(&item, visited, dataclass_mod)?);
         }
         Ok(Yaml::Array(yaml_array))
     } else if let Ok(dict) = obj.downcast::<PyDict>() {
         let mut yaml_hash = yaml_rust2::yaml::Hash::new();
         for (k, v) in dict.iter() {
             yaml_hash.insert(
-                pyobject_to_yaml_inner(&k, visited)?,
-                pyobject_to_yaml_inner(&v, visited)?,
+                pyobject_to_yaml_inner(&k, visited, dataclass_mod)?,
+                pyobject_to_yaml_inner(&v, visited, dataclass_mod)?,
+            );
+        }
+        Ok(Yaml::Hash(yaml_hash))
+    } else if dataclass_mod.is_dataclass(obj)? {
+        let dict = dataclass_mod
+            .asdict
+            .call1((obj,))?
+            .downcast_into::<PyDict>()?;
+        let mut yaml_hash = yaml_rust2::yaml::Hash::new();
+        for (k, v) in dict.iter() {
+            yaml_hash.insert(
+                pyobject_to_yaml_inner(&k, visited, dataclass_mod)?,
+                pyobject_to_yaml_inner(&v, visited, dataclass_mod)?,
             );
         }
         Ok(Yaml::Hash(yaml_hash))
@@ -129,7 +168,10 @@ fn pyobject_to_yaml_inner(
 // Wrapper function to initialize the visited set
 pub fn pyobject_to_yaml(obj: &Bound<'_, PyAny>) -> PyResult<Yaml> {
     let mut visited = HashSet::new();
-    pyobject_to_yaml_inner(obj, &mut visited)
+    let dataclass_mod = DataclassMod::new(obj.py())?;
+    pyobject_to_yaml_inner(obj, &mut visited, &dataclass_mod).map_err(|e| {
+        YAMLEncodeError::new_err(format!("Error converting Python object to YAML: {}", e))
+    })
 }
 
 #[pyfunction]
