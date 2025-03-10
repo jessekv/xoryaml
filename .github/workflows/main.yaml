@@ -60,8 +60,8 @@ jobs:
           set -e
           python3 -m venv .venv
           source .venv/bin/activate
-          pip install xoryaml[test] --find-links dist --force-reinstall
-          pip install pytest
+          pip install xoryaml --find-links dist --force-reinstall --no-deps --no-index
+          pip install xoryaml[test]
           pytest
       - name: pytest
         if: ${{ !startsWith(matrix.platform.target, 'x86') && matrix.platform.target != 'ppc64' }}
@@ -112,8 +112,8 @@ jobs:
           set -e
           python3 -m venv .venv
           source .venv/Scripts/activate
-          pip install xoryaml[test] --find-links dist --force-reinstall
-          pip install pytest
+          pip install xoryaml --find-links dist --force-reinstall --no-deps --no-index
+          pip install xoryaml[test]
           pytest
 
   macos:
@@ -146,7 +146,8 @@ jobs:
           set -e
           python3 -m venv .venv
           source .venv/bin/activate
-          pip install xoryaml[test] --find-links dist --force-reinstall
+          pip install xoryaml --find-links dist --force-reinstall --no-deps --no-index
+          pip install xoryaml[test]
           pip install pytest
           pytest
 
