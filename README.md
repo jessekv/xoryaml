@@ -57,8 +57,8 @@ If you want to restore the parsed data into python data structures, I highly
 recommend [pydantic](https://docs.pydantic.dev/latest/).
 
 ```python
-parser = pydantic.TypeAdapter(YAYAMLModule).validator.validate_python
-print(parser(xoryaml.loads(xoryaml.dumps(module))))
+validator = pydantic.TypeAdapter(YAYAMLModule).validator.validate_python
+print(validator(xoryaml.loads(xoryaml.dumps(module))))
 # YAYAMLModule(
 #     name="xoryaml",
 #     released=datetime.datetime(2025, 3, 08, 17, 1, 14, 569027, tzinfo=TzInfo(UTC)),
